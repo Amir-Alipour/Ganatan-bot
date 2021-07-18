@@ -104,7 +104,7 @@ client.on("message", async (message) => {
                                 
                                 message.member.voice.channel.join()
                                 .then(connection => {
-                                    message.channel.send(`| Now Playing ${song.original_title} |`);
+                                    message.channel.send(`| **Now Playing** ${song.original_title} |`);
 
                                     const dispatcher = connection.play(data.Download_url);
 
@@ -181,7 +181,7 @@ client.on("message", async (message) => {
                         message.reply("Invalid Count!");
                     }else {
                         message.channel.bulkDelete(count)
-                        .then(() => message.channel.send(`${count} message deleted!`))
+                        .then(() => message.channel.send(`> **${count} message deleted!**`))
                         .catch(() => message.reply("I don't have permisions for do it :("));
                     }
                 }else {
