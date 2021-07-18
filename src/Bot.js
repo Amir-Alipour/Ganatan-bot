@@ -65,7 +65,7 @@ client.on("message", async (message) => {
 
                     message.channel.send(`Searching for ${search} ...`);
 
-                    usetube.searchVideo(search).then((videosData) => {
+                    await usetube.searchVideo(search).then( async (videosData) => {
                         if(!videosData){
                             message.reply("Ganatan Not Work | maybe youtube filter on your country!");
                             return;
@@ -85,7 +85,7 @@ client.on("message", async (message) => {
                         )[0];
                         // filter the result from the youtube reactors
 
-                        axios
+                        await axios
                             .request({
                                 method: "GET",
                                 url: "https://youtube-to-mp32.p.rapidapi.com/yt_to_mp3",
@@ -106,6 +106,62 @@ client.on("message", async (message) => {
 
                                     const dispatcher = connection.play(data.Download_url);
 
+                                    client.on("message", msg => {
+                                        if(message.author.bot) return;
+
+                                        if(message.content.startsWith(cmd)){
+                                            const [CMD_NAME, ...args] = msg.content
+                                            .trim()
+                                            .substring(cmd.length)
+                                            .split(/\s+/);
+
+                                            switch (CMD_NAME) {
+                                                case "s":
+                                                case "stop": {
+                                                    dispatcher.pause();
+
+                                                    break;
+                                                }
+
+                                                case "r": {
+                                                    dispatcher.resume();
+
+                                                    break;
+                                                }
+
+                                                case "vol": {
+                                                    if(args[0] === "up"){
+                                                        dispatcher.setVolume(1);
+                                                    }else if (args[0] === 'down'){
+                                                        dispatcher.setVolume(0.5);
+                                                    }
+
+                                                    break;
+                                                }
+
+                                                case "mute": {
+                                                    dispatcher.setVolume(0);
+
+                                                    break;
+                                                }
+                                                case "unmute": {
+                                                    dispatcher.setVolume(1);
+
+                                                    break;
+                                                }
+
+                                                case "dis": {
+                                                    connection.disconnect();
+
+                                                    break;
+                                                }
+
+                                                default: {
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    })
 
                                 }).catch(err => console.log("Error from connect to voice channel: " + err))
                             })
@@ -121,10 +177,6 @@ client.on("message", async (message) => {
             // ------------------------------
             // ------------------------------
             // ------------------------------
-
-            default: {
-                message.reply("I don't know this command");
-            }
         }
     }
 });
