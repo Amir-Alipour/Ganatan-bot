@@ -258,3 +258,14 @@ client.on("message", async (message) => {
         }
     }
 });
+
+
+
+client.on('messageReactionAdd', (reaction, user) => {
+    const member = reaction.message.guild.members.cache.get(user.id);
+
+    if(reaction.emoji.name === "🐮" || reaction.emoji.name === "🐄"){
+        reaction.message.reply(`${member.user.username} you Call me? need anything?`);
+    }
+})
+// reaction to anyone add cow react to any message
