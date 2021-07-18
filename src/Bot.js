@@ -1,54 +1,98 @@
 // env file for hidden keys
-require('dotenv').config();
+require("dotenv").config();
 
 // axios for manage HTTP requests
-const axios = require('axios').default;
+const axios = require("axios").default;
 
 // for get video IDs from a query at youtube
 const usetube = require("usetube");
 
 //  for better connection to discord Api with JS
-const {Client} = require('discord.js');
+const { Client } = require("discord.js");
 const client = new Client();
 client.login(process.env.TOKEN);
 
-const cmd = "$" // starter command for know when user call BOT
+const cmd = "$"; // starter command for know when user call BOT
 
 client.on("ready", () => {
     console.log("BOT is ready!");
-})
+});
 
 client.on("message", async (message) => {
-    if(message.author.bot) return;
+    if (message.author.bot) return;
 
-    if(message.content.toLocaleLowerCase() === "ganatan"){
-        message.reply(`What you need boss ${"https://emoji.gg/assets/emoji/6308-cow-roll.gif"}`);
+    if (message.content.toLocaleLowerCase() === "ganatan") {
+        message.reply(
+            `What you need boss ${"https://emoji.gg/assets/emoji/6308-cow-roll.gif"}`
+        );
     }
 
-    if(message.content.startsWith(cmd)){
+    if (message.content.startsWith(cmd)) {
         const [CMD_NAME, ...args] = message.content
             .trim()
             .substring(cmd.length)
             .split(/\s+/);
 
-        switch (CMD_NAME){
+        switch (CMD_NAME) {
             case "cmd": {
                 message.reply(`Ganatan Commands :
-                    ${'`$p (song name | artist and song)`'} : play song
-                    ${'`$s or $stop`'} : pause the song
-                    ${'`$r`'} : resume the song
-                    ${'`$mute and $unmute`'} : mute or unmute the Ganatan
-                    ${'`$vol (up | down)`'} : increase or decrease volume
-                    ${'`$dis`'} : disconnect Ganatan
+                    ${"`call my name`"} when you wanna know I'm here ..
+                    ${"`$p (song name | artist and song)`"} : play song
+                    ${"`$s or $stop`"} : pause the song
+                    ${"`$r`"} : resume the song
+                    ${"`$mute and $unmute`"} : mute or unmute the Ganatan
+                    ${"`$vol (up | down)`"} : increase or decrease volume
+                    ${"`$dis`"} : disconnect Ganatan
                 `);
                 break;
             }
+            // cmd for show all Ganatan commands to user
+            // ------------------------------
+            // ------------------------------
+            // ------------------------------
 
-            
+            case "p": {
+                if (message.member.voice.channel) {
+                    let search;
+                    if (args.length < 1) {
+                        message.reply("Enter a Song name first!");
+                        return;
+                    } else if (args.length === 1) {
+                        search = args[0];
+                    } else {
+                        search = args.join(" ");
+                    }
+
+                    message.channel.send("Searching ...!");
+
+                    usetube.searchVideo(search).then((videosData) => {
+                        const song = videosData.videos.filter(
+                            (video) =>
+                                !video.original_title
+                                    .toLowerCase()
+                                    .includes(
+                                        "reaction" ||
+                                            "react" ||
+                                            "بررسی" ||
+                                            "ری اکشن" ||
+                                            "ری اکت" ||
+                                            "تحلیل"
+                                    )
+                        )[0];
+                        // filter the result from the youtube reactors
+                    });
+                } else {
+                    message.reply("You need to join a voice channel first!");
+                }
+            }
+            // for search the song from youtube and filter that and convert to mp3 link and play it in voice channel
+            // ------------------------------
+            // ------------------------------
+            // ------------------------------
 
             default: {
                 message.reply("I don't know this command");
             }
         }
     }
-})
+});
