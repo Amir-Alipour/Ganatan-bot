@@ -36,6 +36,12 @@ client.on("message", async (message) => {
         switch (CMD_NAME) {
             case "cmd": {
                 message.reply(`Ganatan Commands :
+                    ${"`$clear 1-100`"} : clear chat
+                    ${"`$kick @user`"} : kick user
+                    ${"`$me`"} : get your information
+                    ${"`$avatar`"} : get your avatar
+                    ${"`$discord`"} : get discord avatars
+                    -------------------------
                     ${"`call my name`"} when you wanna know I'm here ..
                     ${"`$p (song name | artist and song)`"} : play song
                     ${"`$s or $stop`"} : pause the song
@@ -43,9 +49,6 @@ client.on("message", async (message) => {
                     ${"`$mute and $unmute`"} : mute or unmute the Ganatan
                     ${"`$vol (up | down)`"} : increase or decrease volume
                     ${"`$dis`"} : disconnect Ganatan
-                    -------------------------
-                    ${"`$clear 1-100`"} : clear chat
-                    ${"`$kick @user`"} : kick user
                 `);
                 break;
             }
@@ -191,6 +194,8 @@ client.on("message", async (message) => {
 
                 break;
             }
+            // -------------------------
+            // -------------------------
 
             case "kick": {
                 if(!message.member.hasPermission("KICK_MEMBERS")){
@@ -216,6 +221,40 @@ client.on("message", async (message) => {
 
                 break;
             }
+            // -------------------------
+            // -------------------------
+
+            case "avatar": {
+                message.reply(message.author.displayAvatarURL());
+
+                break;
+            }
+            // -------------------------
+            // -------------------------
+
+            case "me": {
+                const {author} = message;
+                message.reply(`You're ${author.username} with (${author.id}) ID`);
+
+                break;
+            }
+            // -------------------------
+            // ------------------------
+
+            case "discord": {
+                message.channel.send(`
+                https://cdn.discordapp.com/embed/avatars/1.png
+                https://cdn.discordapp.com/embed/avatars/2.png
+                https://cdn.discordapp.com/embed/avatars/3.png
+                https://cdn.discordapp.com/embed/avatars/4.png
+                https://cdn.discordapp.com/embed/avatars/5.png
+                `);
+
+                break;
+            }
+            // -------------------------
+            // ------------------------
+
         }
     }
 });
