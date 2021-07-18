@@ -43,6 +43,8 @@ client.on("message", async (message) => {
                     ${"`$mute and $unmute`"} : mute or unmute the Ganatan
                     ${"`$vol (up | down)`"} : increase or decrease volume
                     ${"`$dis`"} : disconnect Ganatan
+                    -------------------------
+                    ${"`$clear 1-100`"} : clear chat 
                 `);
                 break;
             }
@@ -102,7 +104,7 @@ client.on("message", async (message) => {
                                 
                                 message.member.voice.channel.join()
                                 .then(connection => {
-                                    message.channel.send(`Now Playing ${song.original_title}`);
+                                    message.channel.send(`| Now Playing ${song.original_title} |`);
 
                                     const dispatcher = connection.play(data.Download_url);
 
@@ -119,13 +121,11 @@ client.on("message", async (message) => {
                                                 case "s":
                                                 case "stop": {
                                                     dispatcher.pause();
-
                                                     break;
                                                 }
 
                                                 case "r": {
                                                     dispatcher.resume();
-
                                                     break;
                                                 }
 
@@ -135,24 +135,20 @@ client.on("message", async (message) => {
                                                     }else if (args[0] === 'down'){
                                                         dispatcher.setVolume(0.5);
                                                     }
-
                                                     break;
                                                 }
 
                                                 case "mute": {
                                                     dispatcher.setVolume(0);
-
                                                     break;
                                                 }
                                                 case "unmute": {
                                                     dispatcher.setVolume(1);
-
                                                     break;
                                                 }
 
                                                 case "dis": {
                                                     connection.disconnect();
-
                                                     break;
                                                 }
 
@@ -177,6 +173,23 @@ client.on("message", async (message) => {
             // ------------------------------
             // ------------------------------
             // ------------------------------
+
+            case "clear": {
+                if(args[0]){
+                    let count = parseInt(args[0]);
+                    if(count < 1 || count > 100) {
+                        message.reply("Invalid Count!");
+                    }else {
+                        message.channel.bulkDelete(count)
+                        .then(() => message.channel.send(`${count} message deleted!`))
+                        .catch(() => message.reply("I don't have permisions for do it :("));
+                    }
+                }else {
+                    message.reply("Enter number 1 - 100 first!");
+                }
+
+                break;
+            }
         }
     }
 });
