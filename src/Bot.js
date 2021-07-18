@@ -44,7 +44,8 @@ client.on("message", async (message) => {
                     ${"`$vol (up | down)`"} : increase or decrease volume
                     ${"`$dis`"} : disconnect Ganatan
                     -------------------------
-                    ${"`$clear 1-100`"} : clear chat 
+                    ${"`$clear 1-100`"} : clear chat
+                    ${"`$kick @user`"} : kick user
                 `);
                 break;
             }
@@ -182,10 +183,35 @@ client.on("message", async (message) => {
                     }else {
                         message.channel.bulkDelete(count)
                         .then(() => message.channel.send(`> **${count} message deleted!**`))
-                        .catch(() => message.reply("I don't have permisions for do it :("));
+                        .catch(() => message.reply("I don't have permissions for do it :("));
                     }
                 }else {
                     message.reply("Enter number 1 - 100 first!");
+                }
+
+                break;
+            }
+
+            case "kick": {
+                if(!message.member.hasPermission("KICK_MEMBERS")){
+                    return message.reply("Yout don't have permissions !!!");
+                };
+
+                if (args.length === 0) return message.reply("Please Tag an User");
+
+                const userID = args[0].match(/(\d+)/);
+                const member = message.guild.members.cache.get(
+                    userID ? userID[0] : args[0]
+                )
+
+                if(member){
+                    member.kick()
+                    .then(member => {
+                        message.channel.send(`${member} was **K I C K E D**`);
+                    })
+                    .catch(() => message.reply("I don't have permissions for kick anyone :("))
+                }else {
+                    message.reply("That member not found!");
                 }
 
                 break;
