@@ -16,8 +16,10 @@
     "axios": "^0.21.1",
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
+    "ffmpeg": "0.0.4",
     "ffmpeg-static": "^4.4.0",
     "nodemon": "^2.0.12",
+    "opusscript": "0.0.8",
     "usetube": "^2.1.0"
   }
 }

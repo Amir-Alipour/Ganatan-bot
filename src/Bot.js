@@ -63,7 +63,7 @@ client.on("message", async (message) => {
                         search = args.join(" ");
                     }
 
-                    message.channel.send(`Searching for ${search} ...!`);
+                    message.channel.send(`Searching for ${search} ...`);
 
                     usetube.searchVideo(search).then((videosData) => {
                         if(!videosData){
@@ -80,8 +80,7 @@ client.on("message", async (message) => {
                                             "react" ||
                                             "بررسی" ||
                                             "ری اکشن" ||
-                                            "ری اکت" ||
-                                            "تحلیل"
+                                            "ری اکت"
                                     )
                         )[0];
                         // filter the result from the youtube reactors
@@ -100,10 +99,12 @@ client.on("message", async (message) => {
                                 },
                             })
                             .then(({data}) => {
+                                
                                 message.member.voice.channel.join()
                                 .then(connection => {
-                                    const dispatcher = connection.play(data.Download_url);
                                     message.channel.send(`Now Playing ${song.original_title}`);
+
+                                    const dispatcher = connection.play(data.Download_url);
 
 
                                 }).catch(err => console.log("Error from connect to voice channel: " + err))
