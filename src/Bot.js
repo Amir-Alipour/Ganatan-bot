@@ -63,9 +63,14 @@ client.on("message", async (message) => {
                         search = args.join(" ");
                     }
 
-                    message.channel.send("Searching ...!");
+                    message.channel.send(`Searching for ${search} ...!`);
 
                     usetube.searchVideo(search).then((videosData) => {
+                        if(!videosData){
+                            message.reply("Ganatan Not Work | maybe youtube filter on your country!");
+                            return;
+                        }
+
                         const song = videosData.videos.filter(
                             (video) =>
                                 !video.original_title
@@ -80,10 +85,36 @@ client.on("message", async (message) => {
                                     )
                         )[0];
                         // filter the result from the youtube reactors
+
+                        axios
+                            .request({
+                                method: "GET",
+                                url: "https://youtube-to-mp32.p.rapidapi.com/yt_to_mp3",
+                                params: {
+                                    video_id: song.id,
+                                },
+                                headers: {
+                                    "x-rapidapi-key": process.env.KEY,
+                                    "x-rapidapi-host":
+                                        "youtube-to-mp32.p.rapidapi.com",
+                                },
+                            })
+                            .then(({data}) => {
+                                message.member.voice.channel.join()
+                                .then(connection => {
+                                    const dispatcher = connection.play(data.Download_url);
+                                    message.channel.send(`Now Playing ${song.original_title}`);
+
+
+                                }).catch(err => console.log("Error from connect to voice channel: " + err))
+                            })
+                            .catch((err) => console.log("Error from convert video ID to link: " + err));
                     });
                 } else {
                     message.reply("You need to join a voice channel first!");
                 }
+
+                break;
             }
             // for search the song from youtube and filter that and convert to mp3 link and play it in voice channel
             // ------------------------------
