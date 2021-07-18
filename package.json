@@ -12,9 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/opus": "^0.5.3",
     "axios": "^0.21.1",
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
+    "ffmpeg-static": "^4.4.0",
     "nodemon": "^2.0.12",
     "usetube": "^2.1.0"
   }
