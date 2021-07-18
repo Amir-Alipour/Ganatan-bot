@@ -36,19 +36,22 @@ client.on("message", async (message) => {
         switch (CMD_NAME) {
             case "cmd": {
                 message.reply(`Ganatan Commands :
+                    ${"`call my name`"} when you wanna know I'm here ..
                     ${"`$clear 1-100`"} : clear chat
                     ${"`$kick @user`"} : kick user
+                    ${"`$inv`"} : generate invite link
                     ${"`$me`"} : get your information
                     ${"`$avatar`"} : get your avatar
                     ${"`$discord`"} : get discord avatars
                     -------------------------
-                    ${"`call my name`"} when you wanna know I'm here ..
                     ${"`$p (song name | artist and song)`"} : play song
                     ${"`$s or $stop`"} : pause the song
                     ${"`$r`"} : resume the song
                     ${"`$mute and $unmute`"} : mute or unmute the Ganatan
                     ${"`$vol (up | down)`"} : increase or decrease volume
                     ${"`$dis`"} : disconnect Ganatan
+                    -------------------------
+                    ${"`$share`"} : Ganatan's link for share it
                 `);
                 break;
             }
@@ -153,6 +156,7 @@ client.on("message", async (message) => {
 
                                                 case "dis": {
                                                     connection.disconnect();
+                                                    msg.react("👋");
                                                     break;
                                                 }
 
@@ -255,6 +259,22 @@ client.on("message", async (message) => {
             // -------------------------
             // ------------------------
 
+            case "inv": {
+                message.channel.createInvite().then(res => {
+                    message.reply(`https://discord.gg/${res.code}`);
+                }).catch(err => console.log(err))
+
+                break;
+            }
+            // -------------------------
+            // ------------------------
+
+            case "share": {
+                message.reply("https://discord.com/oauth2/authorize?client_id=866251163963752478&scope=bot");
+
+                break;
+            }
+
         }
     }
 });
@@ -264,8 +284,9 @@ client.on("message", async (message) => {
 client.on('messageReactionAdd', (reaction, user) => {
     const member = reaction.message.guild.members.cache.get(user.id);
 
-    if(reaction.emoji.name === "🐮" || reaction.emoji.name === "🐄"){
-        reaction.message.reply(`${member.user.username} you Call me? need anything?`);
+    const {name} = reaction.emoji;
+    if(name === "🐮" || name === "🐄"){
+        reaction.message.channel.send(`${member.user.username} you Call me? need anything?`);
     }
 })
 // reaction to anyone add cow react to any message
