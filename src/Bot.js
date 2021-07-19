@@ -8,7 +8,7 @@ const axios = require("axios").default;
 const usetube = require("usetube");
 
 //  for better connection to discord Api with JS
-const { Client } = require("discord.js");
+const { Client, MessageEmbed } = require("discord.js");
 const client = new Client();
 client.login(process.env.TOKEN);
 
@@ -46,6 +46,7 @@ client.on("message", async (message) => {
                     -------------------------
                     ${"`$p (song name | artist and song)`"} : play song
                     ${"`$s or $stop`"} : pause the song
+                    ${"`$link`"} : get official song link
                     ${"`$r`"} : resume the song
                     ${"`$mute and $unmute`"} : mute or unmute the Ganatan
                     ${"`$vol (up | down)`"} : increase or decrease volume
@@ -108,10 +109,17 @@ client.on("message", async (message) => {
                                 },
                             })
                             .then(({data}) => {
+                                const member = message.guild.members.cache.get(message.author.id);
+
+                                const playingSong = new MessageEmbed()
+                                .setColor("ffffff")
+                                .setTitle(song.original_title)
+                                .setURL(`https://www.youtube.com/watch?v=${song.id}`)
+                                .setDescription(`**[${member}]**, enjoy it ™`)
+                                message.channel.send(playingSong);
                                 
                                 message.member.voice.channel.join()
                                 .then(connection => {
-                                    message.channel.send(`${"```"}| NOW PLAYING ${song.original_title} for ${message.author.tag} |${"```"}`);
 
                                     const dispatcher = connection.play(data.Download_url);
 
