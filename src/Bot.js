@@ -111,20 +111,25 @@ client.on("message", async (message) => {
                                 
                                 message.member.voice.channel.join()
                                 .then(connection => {
-                                    message.channel.send(`| **Now Playing** ${song.original_title} |`);
+                                    message.channel.send(`${"```"}| **Now Playing** ${song.original_title} |${"```"}`);
 
                                     const dispatcher = connection.play(data.Download_url);
 
                                     client.on("message", msg => {
-                                        if(message.author.bot) return;
+                                        if(msg.author.bot) return;
 
-                                        if(message.content.startsWith(cmd)){
+                                        if(msg.content.startsWith(cmd)){
                                             const [CMD_NAME, ...args] = msg.content
                                             .trim()
                                             .substring(cmd.length)
                                             .split(/\s+/);
 
                                             switch (CMD_NAME) {
+                                                case "link": {
+                                                    msg.reply(`https://www.youtube.com/watch?v=${song.id}`);
+                                                    break;
+                                                }
+
                                                 case "s":
                                                 case "stop": {
                                                     dispatcher.pause();
