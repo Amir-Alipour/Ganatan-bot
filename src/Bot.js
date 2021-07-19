@@ -111,7 +111,7 @@ client.on("message", async (message) => {
                                 
                                 message.member.voice.channel.join()
                                 .then(connection => {
-                                    message.channel.send(`${"```"}| **Now Playing** ${song.original_title} |${"```"}`);
+                                    message.channel.send(`${"```"}| NOW PLAYING ${song.original_title} for ${message.author.tag} |${"```"}`);
 
                                     const dispatcher = connection.play(data.Download_url);
 
