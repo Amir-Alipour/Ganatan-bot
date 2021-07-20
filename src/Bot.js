@@ -124,12 +124,12 @@ client.on("message", async (message) => {
                                     const dispatcher = connection.play(data.Download_url)
                                         .on("finish", () => {
                                             playing = false;
-                                            setInterval(() => {
+                                            setTimeout(() => {
                                                 if(!playing){
                                                     connection.disconnect();
                                                     message.channel.send("```I think noone need play anything, bye bye fo NOW 🐄```");
                                                 }
-                                            }, 600000)
+                                            }, 600000);
                                         })
 
                                     client.on("message", msg => {
@@ -150,6 +150,14 @@ client.on("message", async (message) => {
                                                 case "s":
                                                 case "stop": {
                                                     dispatcher.pause();
+
+                                                    setTimeout(() => {
+                                                        if(dispatcher.paused){
+                                                            connection.disconnect();
+                                                            message.channel.send("```I think noone need play anything, bye bye fo NOW 🐄```");
+                                                        }
+                                                    }, 600000);
+
                                                     break;
                                                 }
 
