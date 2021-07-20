@@ -44,7 +44,7 @@ client.on("message", async (message) => {
                     ${"`$avatar`"} : get your avatar
                     ${"`$discord`"} : get discord avatars
                     -------------------------
-                    ${"`$p (song name | artist and song)`"} : play song
+                    ${"`$p (anything or link)`"} : play song
                     ${"`$s or $stop`"} : pause the song
                     ${"`$link`"} : get official song link
                     ${"`$r`"} : resume the song
@@ -120,8 +120,17 @@ client.on("message", async (message) => {
                                 
                                 message.member.voice.channel.join()
                                 .then(connection => {
-
-                                    const dispatcher = connection.play(data.Download_url);
+                                    let playing = true;
+                                    const dispatcher = connection.play(data.Download_url)
+                                        .on("finish", () => {
+                                            playing = false;
+                                            setInterval(() => {
+                                                if(!playing){
+                                                    connection.disconnect();
+                                                    message.channel.send("```I think noone need play anything, bye bye fo NOW 🐄");
+                                                }
+                                            }, 600000)
+                                        })
 
                                     client.on("message", msg => {
                                         if(msg.author.bot) return;
