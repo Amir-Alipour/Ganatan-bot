@@ -127,7 +127,7 @@ client.on("message", async (message) => {
                                             setInterval(() => {
                                                 if(!playing){
                                                     connection.disconnect();
-                                                    message.channel.send("```I think noone need play anything, bye bye fo NOW 🐄");
+                                                    message.channel.send("```I think noone need play anything, bye bye fo NOW 🐄```");
                                                 }
                                             }, 600000)
                                         })
