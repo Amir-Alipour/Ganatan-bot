@@ -118,9 +118,11 @@ client.on("message", async (message) => {
                                 .setDescription(`**[${member}]**, enjoy it ™`)
                                 message.channel.send(playingSong);
                                 
+                                let playing;
+                                
                                 message.member.voice.channel.join()
                                 .then(connection => {
-                                    let playing = true;
+                                    playing = true;
                                     const dispatcher = connection.play(data.Download_url)
                                         .on("finish", () => {
                                             playing = false;
@@ -131,6 +133,7 @@ client.on("message", async (message) => {
                                                 }
                                             }, 600000);
                                         })
+
 
                                     client.on("message", msg => {
                                         if(msg.author.bot) return;
@@ -144,7 +147,6 @@ client.on("message", async (message) => {
                                             switch (CMD_NAME) {
                                                 case "link": {
                                                     msg.reply(`https://www.youtube.com/watch?v=${song.id}`);
-                                                    break;
                                                 }
 
                                                 case "s":
@@ -154,7 +156,6 @@ client.on("message", async (message) => {
                                                     setTimeout(() => {
                                                         if(dispatcher.paused){
                                                             connection.disconnect();
-                                                            message.channel.send("```I think noone need play anything, bye bye for NOW 🐄```");
                                                         }
                                                     }, 600000);
 
