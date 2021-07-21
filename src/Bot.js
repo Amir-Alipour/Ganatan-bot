@@ -46,7 +46,6 @@ client.on("message", async (message) => {
                     -------------------------
                     ${"`$p (anything or link)`"} : play song
                     ${"`$s or $stop`"} : pause the song
-                    ${"`$link`"} : get official song link
                     ${"`$r`"} : resume the song
                     ${"`$mute and $unmute`"} : mute or unmute the Ganatan
                     ${"`$vol (up | down)`"} : increase or decrease volume
