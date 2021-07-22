@@ -13,6 +13,7 @@ const client = new Client();
 client.login(process.env.TOKEN);
 
 const cmd = "$"; // starter command for know when user call BOT
+let playing = false;
 
 client.on("ready", () => {
     console.log("BOT is ready!");
@@ -117,12 +118,12 @@ client.on("message", async (message) => {
                                 .setDescription(`**[${member}]**, enjoy it ™`)
                                 message.channel.send(playingSong);
                                 
-                                let playing;
-                                
                                 message.member.voice.channel.join()
                                 .then(connection => {
-                                    playing = true;
                                     const dispatcher = connection.play(data.Download_url)
+                                        .on("start", () => {
+                                            playing = true;
+                                        })
                                         .on("finish", () => {
                                             playing = false;
                                             setTimeout(() => {
