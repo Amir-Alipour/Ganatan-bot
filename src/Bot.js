@@ -98,14 +98,14 @@ client.on("message", async (message) => {
                         await axios
                             .request({
                                 method: "GET",
-                                url: "https://youtube-to-mp32.p.rapidapi.com/yt_to_mp3",
+                                url: "https://youtube-mp36.p.rapidapi.com/dl",
                                 params: {
-                                    video_id: song.id,
+                                    id: song.id,
                                 },
                                 headers: {
                                     "x-rapidapi-key": process.env.KEY,
                                     "x-rapidapi-host":
-                                        "youtube-to-mp32.p.rapidapi.com",
+                                        "youtube-mp36.p.rapidapi.com",
                                 },
                             })
                             .then(({data}) => {
@@ -120,7 +120,7 @@ client.on("message", async (message) => {
                                 
                                 message.member.voice.channel.join()
                                 .then(connection => {
-                                    const dispatcher = connection.play(data.Download_url)
+                                    const dispatcher = connection.play(data.link)
                                         .on("start", () => {
                                             playing = true;
                                         })
