@@ -306,6 +306,12 @@ client.on("message", async (message) => {
                 break;
             }
 
+            case "cow": {
+                message.reply("**M O O O W**");
+
+                break;
+            }
+
         }
     }
 });
