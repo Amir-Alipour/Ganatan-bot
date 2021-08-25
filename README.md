@@ -1,8 +1,6 @@
 # Ganatan-bot
 
-## Ganatan is published, for add to your server click at [This](https://discord.com/oauth2/authorize?client_id=866251163963752478&scope=bot) link
-
-[Ganatan](https://discord.com/oauth2/authorize?client_id=866251163963752478&scope=bot) is a [Discord](https://discord.com/) Bot created with [Discord.js](https://github.com/discordjs/discord.js) <br/>
+Ganatan is a [Discord](https://discord.com/) Bot created with [Discord.js](https://github.com/discordjs/discord.js) <br/>
 that for search song or sounds from youtube and play it to voice channel <br/>
 and some adminator works like kick, create invite link, get avatar and more ...
 
