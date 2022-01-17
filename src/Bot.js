@@ -8,8 +8,13 @@ const axios = require("axios").default;
 const usetube = require("usetube");
 
 //  for better connection to discord Api with JS
-const { Client, MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
-const client = new Client();
+const { Client, MessageEmbed, MessageButton, MessageActionRow, Intents } = require("discord.js");
+const client = new Client({ 
+	intents: [
+		Intents.FLAGS.GUILDS, 
+		Intents.FLAGS.GUILD_MESSAGES
+	] 
+});
 client.login(process.env.TOKEN);
 
 // the BOT buttons library
@@ -21,7 +26,7 @@ client.on("ready", () => {
     console.log("BOT is ready!");
 });
 
-client.on("message", async (message) => {
+client.on("messageCreate", async (message) => {
     if (message.author.bot) return;
 
     if (message.content.toLocaleLowerCase() === "ganatan") {
@@ -133,7 +138,7 @@ client.on("message", async (message) => {
                                             .setStyle('DANGER')
                                     )
 
-                                await message.channel.send({content: null, ephemeral: true, embeds: [playingSong], components: [action_btns]})
+                                message.channel.send({content: null, ephemeral: true, embeds: [playingSong], components: [action_btns]})
                                 const collector = message.channel.createMessageComponentCollector();
                                
                                 
@@ -173,7 +178,7 @@ client.on("message", async (message) => {
                                     })
 
 
-                                    client.on("message", msg => {
+                                    client.on("messageCreate", msg => {
                                         if(msg.author.bot) return;
 
                                         if(msg.content.startsWith(cmd)){
