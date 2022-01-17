@@ -12,6 +12,10 @@ const { Client, MessageEmbed } = require("discord.js");
 const client = new Client();
 client.login(process.env.TOKEN);
 
+// the BOT buttons library
+const discordButtons = require("discord-buttons-plugin");
+const buttonClient = new discordButtons(client)
+
 const cmd = "$"; // starter command for know when user call BOT
 let playing = false;
 
@@ -117,6 +121,16 @@ client.on("message", async (message) => {
                                 .setURL(`https://www.youtube.com/watch?v=${song.id}`)
                                 .setDescription(`**[${member}]**, enjoy it ™`)
                                 message.channel.send(playingSong);
+
+                                const button_play_pause = new buttonClient.MessageButton()
+                                .setLabel('Pause / Resume')
+                                .setStyle('green')
+                                .setID('p-r')
+
+                                const button_stop = new buttonClient.MessageButton()
+                                .setLabel('Stop')
+                                .setStyle('red')
+                                .setID('stop')
                                 
                                 message.member.voice.channel.join()
                                 .then(connection => {
@@ -133,6 +147,21 @@ client.on("message", async (message) => {
                                                 }
                                             }, 600000);
                                         })
+
+
+                                    ButtonClient.on('p-r', (inta) => {
+                                        if(dispatcher.paused) {
+                                            dispatcher.resume()
+                                            inta.message.reply("song playing again ...")
+                                        } else {
+                                            dispatcher.pause()
+                                            inta.message.reply("song paused!!")
+                                        }
+                                    })
+
+                                    ButtonClient.on('stop', (inta) => {
+                                        connection.disconnect();
+                                    })
 
 
                                     client.on("message", msg => {
