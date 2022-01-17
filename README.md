@@ -8,7 +8,7 @@ and some adminator works like kick, create invite link, get avatar and more ...
 
 Step 1: <br/>
 go to [This](https://discord.com/developers/applications) link and creat an application and create bot on it, then copy your bot Token <br/>
-go to [This](https://rapidapi.com/) link and create an account, that copu your rapid key <br/>
+go to [This](https://rapidapi.com/) link and create an account, then copy your rapid key <br/>
 
 Step 2: <br/>
 create .env file and then : <br/>
