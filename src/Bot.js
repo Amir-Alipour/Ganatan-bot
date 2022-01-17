@@ -8,29 +8,18 @@ const axios = require("axios").default;
 const usetube = require("usetube");
 
 //  for better connection to discord Api with JS
-const { Client, MessageEmbed, MessageButton, MessageActionRow, Intents } = require("discord.js");
-const {createAudioPlayer, createAudioResource, joinVoiceChannel, VoiceConnectionStatus, AudioPlayerStatus } = require('@discordjs/voice')
-const client = new Client({ 
-	intents: [
-		Intents.FLAGS.GUILDS, 
-		Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_VOICE_STATES,
-        Intents.FLAGS.GUILD_MESSAGE_TYPING,
-	] 
-});
+const { Client, MessageEmbed } = require("discord.js");
+const client = new Client();
 client.login(process.env.TOKEN);
 
-// the BOT buttons library
-
 const cmd = "$"; // starter command for know when user call BOT
-
-const player = createAudioPlayer();
+let playing = false;
 
 client.on("ready", () => {
     console.log("BOT is ready!");
 });
 
-client.on("messageCreate", async (message) => {
+client.on("message", async (message) => {
     if (message.author.bot) return;
 
     if (message.content.toLocaleLowerCase() === "ganatan") {
@@ -59,6 +48,8 @@ client.on("messageCreate", async (message) => {
                     ${"`$p (anything or link)`"} : play song
                     ${"`$s or $stop`"} : pause the song
                     ${"`$r`"} : resume the song
+                    ${"`$mute and $unmute`"} : mute or unmute the Ganatan
+                    ${"`$vol (up | down)`"} : increase or decrease volume
                     ${"`$dis`"} : disconnect Ganatan
                     -------------------------
                     ${"`$share`"} : Ganatan's link for share it
@@ -125,55 +116,26 @@ client.on("messageCreate", async (message) => {
                                 .setTitle(song.original_title)
                                 .setURL(`https://www.youtube.com/watch?v=${song.id}`)
                                 .setDescription(`**[${member}]**, enjoy it ™`)
-
-                                const action_btns = new MessageActionRow()
-                                    .addComponents(
-                                        new MessageButton()
-                                            .setCustomId('pr')
-                                            .setLabel("Pause / Resume")
-                                            .setStyle('SUCCESS')
-                                    )
-                                    .addComponents(
-                                        new MessageButton()
-                                            .setCustomId('stop')
-                                            .setLabel('Stop')
-                                            .setStyle('DANGER')
-                                    )
-
-                                message.channel.send({content: null, ephemeral: true, embeds: [playingSong], components: [action_btns]})
-                                const collector = message.channel.createMessageComponentCollector();
-                               
-                                const connection = joinVoiceChannel({
-                                    channelId: message.channel.id,
-                                    guildId: message.channel.guild.id,
-                                    adapterCreator: message.channel.guild.voiceAdapterCreator
-                                })
-                                connection.subscribe(player);
-
-                                connection.on(VoiceConnectionStatus.Ready, () => {
-                                    const source = createAudioResource(data.link);
-                                    player.play();
-
-                                    collector.on('collect', async i => {
-                                        if(i.customId === "pr"){
-                                            if(AudioPlayerStatus.Paused) {
-                                                player.unpause()
-                                                inta.message.reply("song playing again ...")
-                                            } else {
-                                                player.pause()
-                                                inta.message.reply("song paused!!")
-                                            }
-                                        }
-                                    })
-
-                                    collector.on('collect', async i => {
-                                        if(i.customId === "stop"){
-                                            connection.destroy();
-                                        }
-                                    })
+                                message.channel.send(playingSong);
+                                
+                                message.member.voice.channel.join()
+                                .then(connection => {
+                                    const dispatcher = connection.play(data.link)
+                                        .on("start", () => {
+                                            playing = true;
+                                        })
+                                        .on("finish", () => {
+                                            playing = false;
+                                            setTimeout(() => {
+                                                if(!playing){
+                                                    connection.disconnect();
+                                                    message.channel.send("```I think noone need play anything, bye bye for NOW 🐄```");
+                                                }
+                                            }, 600000);
+                                        })
 
 
-                                    client.on("messageCreate", msg => {
+                                    client.on("message", msg => {
                                         if(msg.author.bot) return;
 
                                         if(msg.content.startsWith(cmd)){
@@ -189,11 +151,11 @@ client.on("messageCreate", async (message) => {
 
                                                 case "s":
                                                 case "stop": {
-                                                    player.pause();
+                                                    dispatcher.pause();
 
                                                     setTimeout(() => {
-                                                        if(AudioPlayerStatus.Paused){
-                                                            connection.destroy();
+                                                        if(dispatcher.paused){
+                                                            connection.disconnect();
                                                         }
                                                     }, 600000);
 
@@ -201,12 +163,30 @@ client.on("messageCreate", async (message) => {
                                                 }
 
                                                 case "r": {
-                                                    player.unpause();
+                                                    dispatcher.resume();
+                                                    break;
+                                                }
+
+                                                case "vol": {
+                                                    if(args[0] === "up"){
+                                                        dispatcher.setVolume(1);
+                                                    }else if (args[0] === 'down'){
+                                                        dispatcher.setVolume(0.5);
+                                                    }
+                                                    break;
+                                                }
+
+                                                case "mute": {
+                                                    dispatcher.setVolume(0);
+                                                    break;
+                                                }
+                                                case "unmute": {
+                                                    dispatcher.setVolume(1);
                                                     break;
                                                 }
 
                                                 case "dis": {
-                                                    connection.destroy();
+                                                    connection.disconnect();
                                                     msg.react("👋");
                                                     break;
                                                 }
@@ -217,8 +197,8 @@ client.on("messageCreate", async (message) => {
                                             }
                                         }
                                     })
-                                })
 
+                                }).catch(err => console.log("Error from connect to voice channel: " + err))
                             })
                             .catch((err) => console.log("Error from convert video ID to link: " + err));
                     });
