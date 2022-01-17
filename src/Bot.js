@@ -120,7 +120,6 @@ client.on("message", async (message) => {
                                 .setTitle(song.original_title)
                                 .setURL(`https://www.youtube.com/watch?v=${song.id}`)
                                 .setDescription(`**[${member}]**, enjoy it ™`)
-                                message.channel.send(playingSong);
 
                                 const button_play_pause = new buttonClient.MessageButton()
                                 .setLabel('Pause / Resume')
@@ -131,6 +130,8 @@ client.on("message", async (message) => {
                                 .setLabel('Stop')
                                 .setStyle('red')
                                 .setID('stop')
+
+                                buttonClient.send(null, {channel: message.channel.id, embed: playingSong, buttons: [[button_play_pause, button_stop]]});
                                 
                                 message.member.voice.channel.join()
                                 .then(connection => {
