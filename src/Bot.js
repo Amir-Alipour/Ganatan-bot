@@ -8,13 +8,11 @@ const axios = require("axios").default;
 const usetube = require("usetube");
 
 //  for better connection to discord Api with JS
-const { Client, MessageEmbed } = require("discord.js");
+const { Client, MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
 const client = new Client();
 client.login(process.env.TOKEN);
 
 // the BOT buttons library
-const discordButtons = require("discord-buttons-plugin");
-const buttonClient = new discordButtons(client)
 
 const cmd = "$"; // starter command for know when user call BOT
 let playing = false;
@@ -121,17 +119,23 @@ client.on("message", async (message) => {
                                 .setURL(`https://www.youtube.com/watch?v=${song.id}`)
                                 .setDescription(`**[${member}]**, enjoy it ™`)
 
-                                const button_play_pause = new buttonClient.MessageButton()
-                                .setLabel('Pause / Resume')
-                                .setStyle('green')
-                                .setID('p-r')
+                                const action_btns = new MessageActionRow()
+                                    .addComponents(
+                                        new MessageButton()
+                                            .setCustomId('pr')
+                                            .setLabel("Pause / Resume")
+                                            .setStyle('SUCCESS')
+                                    )
+                                    .addComponents(
+                                        new MessageButton()
+                                            .setCustomId('stop')
+                                            .setLabel('Stop')
+                                            .setStyle('DANGER')
+                                    )
 
-                                const button_stop = new buttonClient.MessageButton()
-                                .setLabel('Stop')
-                                .setStyle('red')
-                                .setID('stop')
-
-                                buttonClient.send(null, {channel: message.channel.id, embed: playingSong, buttons: [[button_play_pause, button_stop]]});
+                                await message.channel.send({content: null, ephemeral: true, embeds: [playingSong], components: [action_btns]})
+                                const collector = message.channel.createMessageComponentCollector();
+                               
                                 
                                 message.member.voice.channel.join()
                                 .then(connection => {
@@ -150,18 +154,22 @@ client.on("message", async (message) => {
                                         })
 
 
-                                    ButtonClient.on('p-r', (inta) => {
-                                        if(dispatcher.paused) {
-                                            dispatcher.resume()
-                                            inta.message.reply("song playing again ...")
-                                        } else {
-                                            dispatcher.pause()
-                                            inta.message.reply("song paused!!")
+                                    collector.on('collect', async i => {
+                                        if(i.customId === "pr"){
+                                            if(dispatcher.paused) {
+                                                dispatcher.resume()
+                                                inta.message.reply("song playing again ...")
+                                            } else {
+                                                dispatcher.pause()
+                                                inta.message.reply("song paused!!")
+                                            }
                                         }
                                     })
 
-                                    ButtonClient.on('stop', (inta) => {
-                                        connection.disconnect();
+                                    collector.on('collect', async i => {
+                                        if(i.customId === "stop"){
+                                            connection.disconnect();
+                                        }
                                     })
 
 
